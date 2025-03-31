@@ -522,10 +522,12 @@ if __name__ == "__main__":
 
     # Evaluate model and print metrics
     confusion_matrix = evaluate_model(model, test_loader)
-    log_metrics(confusion_matrix)
-
-    # Plot training metrics
+    
+    # Only print metrics on the main process
     if not distributed_training or (distributed_training and global_rank == 0):
+        log_metrics(confusion_matrix)
+
+        # Plot training metrics
         if train_accuracies and test_accuracies:
             plt.figure(figsize=(12, 5))
             
@@ -546,20 +548,20 @@ if __name__ == "__main__":
             print(f"Best test accuracy: {best_accuracy:.2f}%")
             print(f"Total training time: {total_train_time:.2f} seconds")
             
-    # Print confusion matrix
-    print('\nConfusion Matrix:')
-    print('----------------')
-    print('Predicted →')
-    print('Actual ↓')
-    print('      ' + ''.join([f'{classes[i]:<7}' for i in range(10)]))
-    for i in range(10):
-        print(f'{classes[i]:<6}' + ''.join([f'{confusion_matrix[i, j].item():7d}' for j in range(10)]))
+        # Print confusion matrix
+        print('\nConfusion Matrix:')
+        print('----------------')
+        print('Predicted →')
+        print('Actual ↓')
+        print('      ' + ''.join([f'{classes[i]:<7}' for i in range(10)]))
+        for i in range(10):
+            print(f'{classes[i]:<6}' + ''.join([f'{confusion_matrix[i, j].item():7d}' for j in range(10)]))
 
-    # Log confusion matrix
-    logging.info('\nConfusion Matrix:')
-    logging.info('----------------')
-    logging.info('Predicted ->')
-    logging.info('Actual ↓')
-    logging.info('      ' + ''.join([f'{classes[i]:<7}' for i in range(10)]))
-    for i in range(10):
-        logging.info(f'{classes[i]:<6}' + ''.join([f'{confusion_matrix[i, j].item():7d}' for j in range(10)]))
+        # Log confusion matrix
+        logging.info('\nConfusion Matrix:')
+        logging.info('----------------')
+        logging.info('Predicted ->')
+        logging.info('Actual ↓')
+        logging.info('      ' + ''.join([f'{classes[i]:<7}' for i in range(10)]))
+        for i in range(10):
+            logging.info(f'{classes[i]:<6}' + ''.join([f'{confusion_matrix[i, j].item():7d}' for j in range(10)]))
