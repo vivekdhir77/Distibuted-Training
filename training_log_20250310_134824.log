@@ -1,0 +1,97 @@
+2025-03-10 13:48:29,298 - Epoch [1/5], Step [2000/3125], Loss: 2.2984
+2025-03-10 13:48:32,158 - Epoch 1 completed in 8.00 seconds
+2025-03-10 13:48:37,329 - Epoch [2/5], Step [2000/3125], Loss: 2.3194
+2025-03-10 13:48:40,538 - Epoch 2 completed in 8.38 seconds
+2025-03-10 13:48:45,953 - Epoch [3/5], Step [2000/3125], Loss: 2.2868
+2025-03-10 13:48:49,299 - Epoch 3 completed in 8.76 seconds
+2025-03-10 13:48:54,597 - Epoch [4/5], Step [2000/3125], Loss: 2.2914
+2025-03-10 13:48:57,608 - Epoch 4 completed in 8.31 seconds
+2025-03-10 13:49:02,911 - Epoch [5/5], Step [2000/3125], Loss: 2.3217
+2025-03-10 13:49:06,033 - Epoch 5 completed in 8.43 seconds
+2025-03-10 13:49:06,034 - Training completed in 41.88 seconds
+2025-03-10 13:49:07,100 - 
+Class: plane
+Accuracy: 0.8804
+Precision: 0.2168
+Recall: 0.0750
+F1-score: 0.1114
+Specificity: 0.9699
+2025-03-10 13:49:07,100 - 
+Class: car
+Accuracy: 0.8555
+Precision: 0.2021
+Recall: 0.1510
+F1-score: 0.1729
+Specificity: 0.9338
+2025-03-10 13:49:07,101 - 
+Class: bird
+Accuracy: 0.8990
+Precision: 0.2727
+Recall: 0.0060
+F1-score: 0.0117
+Specificity: 0.9982
+2025-03-10 13:49:07,101 - 
+Class: cat
+Accuracy: 0.8955
+Precision: 0.1429
+Recall: 0.0090
+F1-score: 0.0169
+Specificity: 0.9940
+2025-03-10 13:49:07,101 - 
+Class: deer
+Accuracy: 0.8971
+Precision: 0.1463
+Recall: 0.0060
+F1-score: 0.0115
+Specificity: 0.9961
+2025-03-10 13:49:07,101 - 
+Class: dog
+Accuracy: 0.8839
+Precision: 0.2693
+Recall: 0.0940
+F1-score: 0.1394
+Specificity: 0.9717
+2025-03-10 13:49:07,101 - 
+Class: frog
+Accuracy: 0.5438
+Precision: 0.1580
+Recall: 0.8230
+F1-score: 0.2651
+Specificity: 0.5128
+2025-03-10 13:49:07,101 - 
+Class: horse
+Accuracy: 0.8183
+Precision: 0.1426
+Recall: 0.1630
+F1-score: 0.1521
+Specificity: 0.8911
+2025-03-10 13:49:07,101 - 
+Class: ship
+Accuracy: 0.8035
+Precision: 0.2488
+Recall: 0.4780
+F1-score: 0.3273
+Specificity: 0.8397
+2025-03-10 13:49:07,101 - 
+Class: truck
+Accuracy: 0.8918
+Precision: 0.2437
+Recall: 0.0390
+F1-score: 0.0672
+Specificity: 0.9866
+2025-03-10 13:49:07,101 - 
+Confusion Matrix:
+2025-03-10 13:49:07,101 - ----------------
+2025-03-10 13:49:07,101 - Predicted ->
+2025-03-10 13:49:07,101 - Actual ↓
+2025-03-10 13:49:07,101 -       plane  car    bird   cat    deer   dog    frog   horse  ship   truck  
+2025-03-10 13:49:07,101 - plane      75     70      7      8      3     25    156    106    530     20
+2025-03-10 13:49:07,101 - car        28    151      0      7      0     33    452    133    180     16
+2025-03-10 13:49:07,101 - bird       28     46      6      9     11     32    600     98    158     12
+2025-03-10 13:49:07,101 - cat        13     39      0      9      6     49    700     87     84     13
+2025-03-10 13:49:07,101 - deer       20     37      2      1      6     25    730    101     71      7
+2025-03-10 13:49:07,101 - dog         3     31      2      7      6     94    623     84    143      7
+2025-03-10 13:49:07,101 - frog        6     37      2      4      2     13    823     77     26     10
+2025-03-10 13:49:07,101 - horse      10     62      3     10      4     22    641    163     77      8
+2025-03-10 13:49:07,101 - ship      111     98      0      5      3     45    157     75    478     28
+2025-03-10 13:49:07,101 - truck      52    176      0      3      0     11    326    219    174     39
