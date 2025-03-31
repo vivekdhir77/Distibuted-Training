@@ -22,7 +22,7 @@ from torch.nn.parallel import DistributedDataParallel
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Hyper-parameters 
-num_epochs = 50
+num_epochs = 10
 batch_size = 16
 learning_rate = 0.001
 start = 0

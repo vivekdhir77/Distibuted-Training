@@ -30,7 +30,7 @@ class ModelConfig:
 def get_default_config() -> ModelConfig:
     return ModelConfig(
         batch_size=16,
-        num_epochs=50,
+        num_epochs=10,
         learning_rate=3e-4,
         image_size=32,
         patch_size=4,
