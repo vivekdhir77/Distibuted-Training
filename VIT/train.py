@@ -244,15 +244,6 @@ def train_model(config: ModelConfig, distributed_training=False):
         val_accuracy = log_metrics(confusion_matrix, classes)
         val_accuracies.append(val_accuracy)
         
-        # Print confusion matrix
-        print('\nConfusion Matrix:')
-        print('----------------')
-        print('Predicted →')
-        print('Actual ↓')
-        print('      ' + ''.join([f'{classes[i]:<7}' for i in range(config.num_classes)]))
-        for i in range(config.num_classes):
-            print(f'{classes[i]:<6}' + ''.join([f'{confusion_matrix[i, j].item():7d}' for j in range(config.num_classes)]))
-        
         # Get the correct state dict depending on model type
         if isinstance(model, DistributedDataParallel):
             model_state_dict = model.module.state_dict()
@@ -338,6 +329,17 @@ def train_model(config: ModelConfig, distributed_training=False):
       print(f"Total training time (excluding validation): {total_train_time:.2f} seconds")
       logging.info(f"Training completed. Best validation accuracy: {best_accuracy:.4f}")
       logging.info(f"Total training time (excluding validation): {total_train_time:.2f} seconds")
+      
+      # Print final confusion matrix
+      print("\nFinal Confusion Matrix:")
+      print("----------------------")
+      confusion_matrix = evaluate_model(model, testloader, device, config.num_classes)
+      print('Predicted →')
+      print('Actual ↓')
+      print('      ' + ''.join([f'{classes[i]:<7}' for i in range(config.num_classes)]))
+      for i in range(config.num_classes):
+          print(f'{classes[i]:<6}' + ''.join([f'{confusion_matrix[i, j].item():7d}' for j in range(config.num_classes)]))
+      
   return total_train_time
 
 
