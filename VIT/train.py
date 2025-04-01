@@ -234,16 +234,11 @@ def train_model(config: ModelConfig, distributed_training=False):
     print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {epoch_loss:.4f}, Accuracy: {epoch_acc:.2f}%, Time: {epoch_time:.2f}s")
     logging.info(f"Epoch [{epoch+1}/{num_epochs}], Loss: {epoch_loss:.4f}, Accuracy: {epoch_acc:.2f}%, Time: {epoch_time:.2f}s")
 
-    # Evaluate model and save checkpoints
+    # Save checkpoints
     # Only main process in distributed mode or single GPU mode
     should_save = (not distributed_training) or (distributed_training and config.global_rank == 0)
     
     if should_save:
-        print("Evaluating model on test set...")
-        confusion_matrix = evaluate_model(model, testloader, device, config.num_classes)
-        val_accuracy = log_metrics(confusion_matrix, classes)
-        val_accuracies.append(val_accuracy)
-        
         # Get the correct state dict depending on model type
         if isinstance(model, DistributedDataParallel):
             model_state_dict = model.module.state_dict()
@@ -258,9 +253,7 @@ def train_model(config: ModelConfig, distributed_training=False):
             'optimizer_state_dict': optimizer.state_dict(),
             'loss': epoch_loss,
             'train_accuracy': epoch_acc,
-            'test_accuracy': val_accuracy,
             'train_accuracies_history': train_accuracies,
-            'test_accuracies_history': val_accuracies,
             'global_step': global_step,
             'total_train_time': total_train_time,
         }, model_filename)
@@ -273,35 +266,13 @@ def train_model(config: ModelConfig, distributed_training=False):
             'optimizer_state_dict': optimizer.state_dict(),
             'loss': epoch_loss,
             'train_accuracy': epoch_acc,
-            'test_accuracy': val_accuracy,
             'train_accuracies_history': train_accuracies,
-            'test_accuracies_history': val_accuracies,
             'global_step': global_step,
             'total_train_time': total_train_time,
         }, latest_filename)
         
         print(f"Saved model checkpoint to {model_filename}")
         logging.info(f"Saved model checkpoint to {model_filename}")
-        
-        # Save best model
-        if val_accuracy > best_accuracy:
-            best_accuracy = val_accuracy
-            best_filename = os.path.join(config.model_folder, 'best_model.pt')
-            torch.save({
-                'epoch': epoch,
-                'model_state_dict': model_state_dict,
-                'optimizer_state_dict': optimizer.state_dict(),
-                'loss': epoch_loss,
-                'train_accuracy': epoch_acc,
-                'test_accuracy': val_accuracy,
-                'train_accuracies_history': train_accuracies,
-                'test_accuracies_history': val_accuracies,
-                'best_accuracy': best_accuracy,
-                'global_step': global_step,
-                'total_train_time': total_train_time,
-            }, best_filename)
-            print(f"Saved best model with accuracy {val_accuracy:.4f}")
-            logging.info(f"Saved best model with accuracy {val_accuracy:.4f}")
 
   # Plot training metrics at the end (only for main process)
   if should_save and len(train_losses) > 0:
@@ -315,8 +286,7 @@ def train_model(config: ModelConfig, distributed_training=False):
       
       plt.subplot(1, 2, 2)
       plt.plot(train_accuracies, label='Train')
-      plt.plot(val_accuracies, label='Validation')
-      plt.title('Accuracy')
+      plt.title('Training Accuracy')
       plt.xlabel('Epoch')
       plt.ylabel('Accuracy (%)')
       plt.legend()
@@ -325,15 +295,16 @@ def train_model(config: ModelConfig, distributed_training=False):
       plt.savefig(os.path.join(config.model_folder, 'training_metrics.png'))
       plt.close()
       
-      print(f"Training completed. Best validation accuracy: {best_accuracy:.4f}")
-      print(f"Total training time (excluding validation): {total_train_time:.2f} seconds")
-      logging.info(f"Training completed. Best validation accuracy: {best_accuracy:.4f}")
-      logging.info(f"Total training time (excluding validation): {total_train_time:.2f} seconds")
+      print(f"Training completed. Total training time: {total_train_time:.2f} seconds")
+      logging.info(f"Training completed. Total training time: {total_train_time:.2f} seconds")
       
-      # Print final confusion matrix
+      # Evaluate model on test set at the end
+      print("\nEvaluating model on test set...")
+      confusion_matrix = evaluate_model(model, testloader, device, config.num_classes)
+      val_accuracy = log_metrics(confusion_matrix, classes)
+      
       print("\nFinal Confusion Matrix:")
       print("----------------------")
-      confusion_matrix = evaluate_model(model, testloader, device, config.num_classes)
       print('Predicted →')
       print('Actual ↓')
       print('      ' + ''.join([f'{classes[i]:<7}' for i in range(config.num_classes)]))
