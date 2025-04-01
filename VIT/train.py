@@ -11,7 +11,7 @@ from torch.distributed import init_process_group, destroy_process_group
 import os
 from tqdm import tqdm
 from vit import VisionTransformer
-from data_loader import trainloader, testloader, trainset, testset
+from data_loader import get_data_loaders, trainset, testset, classes
 from config import get_default_config, get_weights_file_path, get_latest_weights_file_path, ModelConfig
 import logging
 from datetime import datetime
@@ -93,8 +93,8 @@ def train_model(config: ModelConfig, distributed_training=False):
       device = torch.device('cuda:0')
       print(f"Using device: {device} (single GPU mode)")
   
-  # CIFAR-10 classes
-  classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+  # Get data loaders
+  trainloader, testloader = get_data_loaders(distributed_training, config.local_rank)
   
   # Set up logging
   os.makedirs(config.model_folder, exist_ok=True)

@@ -29,30 +29,28 @@ transform_test = transforms.Compose([
 trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform_train)
 testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_test)
 
-# Determine if we're using distributed training
-local_rank = int(os.environ.get('LOCAL_RANK', -1))
-global_rank = int(os.environ.get('RANK', -1))
-distributed_training = local_rank != -1 and global_rank != -1
-
-# Set up dataloaders based on training mode
-if distributed_training:
-    train_sampler = DistributedSampler(trainset, shuffle=True)
-    trainloader = torch.utils.data.DataLoader(
-        trainset, batch_size=batch_size, shuffle=False,
-        sampler=train_sampler, num_workers=4, pin_memory=True
-    )
-else:
-    trainloader = torch.utils.data.DataLoader(
-        trainset, batch_size=batch_size, shuffle=True,
-        num_workers=4, pin_memory=True
-    )
-
-# Test loader is always the same
-testloader = torch.utils.data.DataLoader(
-    testset, batch_size=batch_size, shuffle=False,
-    num_workers=4, pin_memory=True
-)
-
 # CIFAR-10 classes
 classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+
+def get_data_loaders(distributed_training=False, local_rank=-1):
+    """Create and return data loaders based on training mode"""
+    if distributed_training:
+        train_sampler = DistributedSampler(trainset, shuffle=True)
+        trainloader = torch.utils.data.DataLoader(
+            trainset, batch_size=batch_size, shuffle=False,
+            sampler=train_sampler, num_workers=4, pin_memory=True
+        )
+    else:
+        trainloader = torch.utils.data.DataLoader(
+            trainset, batch_size=batch_size, shuffle=True,
+            num_workers=4, pin_memory=True
+        )
+
+    # Test loader is always the same
+    testloader = torch.utils.data.DataLoader(
+        testset, batch_size=batch_size, shuffle=False,
+        num_workers=4, pin_memory=True
+    )
+    
+    return trainloader, testloader
 
